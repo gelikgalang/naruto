@@ -5,7 +5,8 @@ Open the User Manual in the Documentation folder to see a step-by-step instructi
 
 This project is a course requirement for CS 150 Programming Languages of the Department of Computer Science, College of Engineering, University of the Philippines, Diliman for the 1st semester of the academic year 2017-2018. 
 
-Contributors :	Galang, Angelika Juliah
-		Gonzales, Justin James
+Contributors :	
+	Galang, Angelika Juliah
+	Gonzales, Justin James
 
 
