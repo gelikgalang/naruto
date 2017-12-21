@@ -15,10 +15,16 @@
 
 ### Sources
 > `plex` : https://pypi.python.org/pypi/plex/
+
 > `ply` : http://www.dabeaz.com/ply/
+
 > `naruto.jpg` : https://wallpapercave.com/w/wp1937168
 
 #### Special Reference
-> We would like to acknowledge this project as it served as a guide to us in building ours `https://github.com/gbrllemarie/spacetimetravel`
+> We would like to acknowledge this project as it served as a guide to us in building ours: https://github.com/gbrllemarie/spacetimetravel
+
+> PLY guide: http://www.dabeaz.com/ply/ply.html
+
+> Plex guide: https://pythonhosted.org/plex/tutorial.html
 
 
