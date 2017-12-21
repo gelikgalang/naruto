@@ -103,5 +103,3 @@ while True:
         break      # No more input
     print(tok)
 
-
-
