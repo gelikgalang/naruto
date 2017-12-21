@@ -184,5 +184,3 @@ def startParse():
 
 if __name__ == "__main__":
 	startParse()
-
-
