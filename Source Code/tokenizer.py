@@ -1,6 +1,8 @@
 import ply.lex as lex
 import sys, os
 import ply.yacc as yacc
+
+#-- List of Tokens --#
 tokens=(
 	'progStart_tok',
 	'progEnd_tok',
@@ -33,24 +35,34 @@ tokens=(
 	'float_tok',
 	'anything_tok'
 	)
+
+#-- Tokens for program header/footer --#
 t_progStart_tok = r"(@genin)"
 t_progEnd_tok = r"(@kage)"
+
+#-- Tokens for input/output --#
 t_print_tok = r"(@byakugan)"
 t_read_tok = r"(@summon)"
-t_true_tok = r"(@naruto)"
-t_false_tok = r"(@boruto)"
+
+#-- Tokens for loop/if-else statements --#
 t_while_tok=r"(@izanami)"
 t_if_tok=r"(@ifsu)"
 t_else_tok=r"(@elsu)"
 t_end1_tok=r"(@seal)"
 t_for_tok=r"(@mission)"
 t_end2_tok=r"(@end)"
-t_comma_tok = r','
+
+#-- RegEx for Tokens -- #
 t_dataType_tok=r"@number|@decimal|@boolean|@string"
 integer=r'[0-9]+'
 t_num_tok=integer
 t_float_tok=r'('+integer+'\.'+integer+')'
 t_varName_tok = r"([A-Za-z][A-Za-z0-9]*)"
+
+#-- Tokens for symbols --#
+t_true_tok = r"(@naruto)"
+t_false_tok = r"(@boruto)"
+t_comma_tok = r','
 t_lBrace_tok = r'\['
 t_rBrace_tok = r']'
 t_lParen_tok = r'\('
@@ -62,6 +74,9 @@ t_relationalOp_tok=r"((==)|(>=)|(<=)|(~=))"
 t_not_tok=r'~'
 t_mulDivMod_tok=r'(\*|\/|\%)'
 t_plusMinus_tok=r'(\+|-)'
+
+
+#-- Token to ignore: whitespace --#
 t_ignore  = ' \t'
 
 
@@ -91,6 +106,9 @@ lexer = lex.lex()
 data = '''
 3 + 4 * 10.123123.123123
   + -20 *2 "!@izanami asdasd!"
+  @izanami (x>1)
+  	x = x-1
+  @seal @izanami
 '''
 
 # Give the lexer some input
