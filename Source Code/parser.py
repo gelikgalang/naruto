@@ -31,7 +31,7 @@ tokens=(
 	'mulDivMod_tok',
 	'comment',
 	'float_tok',
-	#'anything_tok'
+	'anything_tok'
 	)
 t_progStart_tok = r"(@genin)"
 t_progEnd_tok = r"(@kage)"
@@ -69,6 +69,10 @@ def t_comment(t):
     r'\!.*'
     return t
     # No return value. Token discarded
+def t_anything_tok(t):
+    r'\".*'
+    return t
+    # No return value. Token discarded
 
 def t_newline(t):
     r'\n+'
@@ -78,9 +82,6 @@ def t_newline(t):
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
-
-
-
 
 
 
@@ -183,3 +184,5 @@ def startParse():
 
 if __name__ == "__main__":
 	startParse()
+
+
