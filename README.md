@@ -14,17 +14,13 @@
 > This project is a course requirement for CS 150 Programming Languages of the Department of Computer Science, College of Engineering, University of the Philippines, Diliman for the 1st semester of the academic year 2017-2018. 
 
 ### Sources
-> `plex` : https://pypi.python.org/pypi/plex/
-
 > `ply` : http://www.dabeaz.com/ply/
 
 > `naruto.jpg` : https://wallpapercave.com/w/wp1937168
 
 #### Special Reference
-> We would like to acknowledge this project as it served as a guide to us in building ours: https://github.com/gbrllemarie/spacetimetravel
+> We would like to acknowledge these projects as it served as guides to us in building ours: https://github.com/gbrllemarie/spacetimetravel, https://github.com/dabeaz/ply/tree/master/example/GardenSnake, https://github.com/alex/alex-s-language
 
 > PLY guide: http://www.dabeaz.com/ply/ply.html
-
-> Plex guide: https://pythonhosted.org/plex/tutorial.html
 
 
