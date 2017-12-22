@@ -45,7 +45,7 @@ class BinOp(Expr):
         self.op = op
     
     def __str__(self):
-        return "<BinaryOperation: %s %s %s>" % (self.left, self.op, self.right)
+        return "<BinOp: %s %s %s>" % (self.left, self.op, self.right)
     
     def calculate(self, context):
         return self.OPS[self.op](self.left.calculate(context), self.right.calculate(context))
@@ -76,20 +76,16 @@ class Number(Expr):
 
 class Boolean(Expr):
     def __init__(self, value):
-        self.value = value
+    	if value == "naruto":
+        	self.value = true
+       	else:
+       		self.value = false
     
     def __str__(self):
         return "<Boolean: %s>" % self.value
     
     def calculate(self, context):
         return self.value
-
-class NoneVal(Expr):
-    def __str__(self):
-        return "<None>"
-    
-    def calculate(self, context):
-        return None
 
 class Assignment(Expr):
     def __init__(self, left, right):
