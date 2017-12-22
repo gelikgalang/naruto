@@ -1,8 +1,8 @@
 import ply.lex as lex
 import sys, os
 import ply.yacc as yacc
-from compiler import ast # <-- built-in module
-#import narutoAST as ast # <-- to be defined by us
+#from compiler import ast # <-- built-in module
+import narutoAST as ast # <-- to be defined by us
 
 #-- List of Tokens --#
 tokens=(
@@ -138,6 +138,7 @@ precedence = (
 					'comment',
 					'float_tok',
 					'anything_tok'),
+	('left','equal_tok','gThan_tok','lThan_tok'),
 	('left', 'plus_tok','minus_tok'),
 	('left', 'mult_tok','div_tok','mod_tok'),
 )	
@@ -147,6 +148,7 @@ def p_start(p):
 
 def p_main(p):
 	'''main : progStart_tok lBrace_tok statements rBrace_tok progEnd_tok'''
+	p[0] = p[3]
 
 def p_statements(p):
 	'''statements : expr statements
@@ -189,10 +191,12 @@ def p_varArr(p):
 
 def p_varAssign(p):
 	'''varAssign : varName_tok varDecArr equal_tok expr'''
+	p[0] = ast.Assigment([p[1]],p[3])
 
 def p_boolAssign(p):
 	'''boolAssign : true_tok 
 		| false_tok'''
+	p[0] = ast.Boolean(p[1])
 
 def p_comments(p):
 	'''comments : comment 
@@ -208,19 +212,39 @@ def p_expr(p):
 		|	varName_tok varDecArr
 		|	id
 	'''
+	if len(p) == 2: 
+		p[0] = p[1] # expr -> id
+	elif len(p) == 4: 
+		if p[1] == lParen_tok:
+			p[0] = p[2]  # expr -> (expr)
+		else:
+			p[0] = BinOp(p[1],p[2],p[3]) # expr -> expr OPERATOR expr
+	else: 
+		p[0] = p[2] # expr -> varName varDecArr
 
 def p_expr2(p):
 	'''expr2 : expr relationalOp_tok expr
 		|	boolAssign'''
+	if len(p) == 4:
+		p[0] = BinOp(p[1],p[2],p[3])
+	else:
+		p[0] = p[1]
 
 def p_condition(p):
 	'''condition : expr2 
 		| not_tok condition 
 		| num_tok'''
+	if p[1] == num_tok:
+		p[0] = ast.Number(p[1])
+	elif len(p) == 3:
+		p[0] = UnaryOp(p[1],p[2])
+	else:
+		p[0] = p[1]
 
 def p_loops(p):
 	'''loops : while 
 		| for'''
+	p[0] = p[1]
 
 def p_while(p):
 	'''while : while_tok condition statements end1_tok while_tok'''
@@ -243,6 +267,7 @@ def p_else(p):
 def p_id(p):
 	'''id : num_tok 
 		| float_tok '''
+	p[0] = ast.Number(p[1])
 
 def p_empty(p):
 	'empty :'
@@ -272,7 +297,7 @@ def startParse():
 	lexer = lex.lex()
 	lexer.input(data)
 
-	parser = yacc.yacc()
+	parser = yacc.yacc(debug=False)
 	parser.parse(data,tracking=True)
 
 	# Tokenize
