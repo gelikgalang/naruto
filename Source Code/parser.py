@@ -1,7 +1,8 @@
 import ply.lex as lex
 import sys, os
 import ply.yacc as yacc
-from compiler import ast
+from compiler import ast # <-- built-in module
+#import narutoAST as ast # <-- to be defined by us
 
 #-- List of Tokens --#
 tokens=(
@@ -109,22 +110,43 @@ def t_error(t):
 
 #-- YACC --#
 precedence = (
-	('nonassoc', 'lParen_tok','rParen_tok','varName_tok','dataType_tok','comment',
-		'if_tok','print_tok','read_tok','num_tok','float_tok','while_tok',
-		'for_tok','rBrace_tok','lBrace_tok','end1_tok','end2_tok'),
+	('nonassoc', 	'progStart_tok',
+					'progEnd_tok',
+					'print_tok',
+					'read_tok',
+					'true_tok',
+					'false_tok',
+					'while_tok',
+					'if_tok',
+					'else_tok',
+					'end1_tok',
+					'for_tok',
+					'end2_tok',
+					'comma_tok',
+					'dataType_tok',
+					'varName_tok',
+					'num_tok',
+					'lBrace_tok',
+					'rBrace_tok',
+					'lParen_tok',
+					'rParen_tok',
+					'lThan_tok',
+					'gThan_tok',
+					'equal_tok',
+					'relationalOp_tok',
+					'not_tok',
+					'comment',
+					'float_tok',
+					'anything_tok'),
 	('left', 'plus_tok','minus_tok'),
 	('left', 'mult_tok','div_tok','mod_tok'),
-)
-
-
+)	
 
 def p_start(p):
 	'''start : comments main'''
-	p[0] = p[1] + p[2]
 
 def p_main(p):
 	'''main : progStart_tok lBrace_tok statements rBrace_tok progEnd_tok'''
-	p[0] = [p[3]]
 
 def p_statements(p):
 	'''statements : expr statements
@@ -135,29 +157,21 @@ def p_statements(p):
 		|	ifelse statements
 		|	IO statements
 		|	empty'''
-	if len(p) == 3:
-		
-	else:
-		p[0] = p[1]
 
 def p_IO(p):
 	'''IO :	print_tok lParen_tok IOBody rParen_tok
 		|	read_tok varName_tok varDecArr
 		'''
-	if len(p) == 4:
-		p[0] = p[3]
 
 def p_IOBody(p):
 	'''IOBody : varName_tok varDecArr IOEnd 
 		|	anything_tok IOEnd'''
-	if len(p) == 3:
-		p[0] = p[3]
+	
 
 def p_IOEnd(p):
 	'''IOEnd : comma_tok IOBody 
 		| empty'''
-	if len(p) == 2:
-		p[0] = p[1]
+	
 def p_varDec(p):
 	'''varDec : dataType_tok varName_tok varDecArr varDecBody'''
 
@@ -229,7 +243,6 @@ def p_else(p):
 def p_id(p):
 	'''id : num_tok 
 		| float_tok '''
-	#p[0] = p[1]
 
 def p_empty(p):
 	'empty :'
@@ -244,9 +257,13 @@ def p_error(p):
 
 def startParse():
 	data = []
+	if len(sys.argv) != 2:
+	    print("Error! No source file specified.")
+	    exit()
+
 	sourceFile = sys.argv[1]
 	if ".naruto" not in sourceFile:
-		print "Invalid file type!"
+		print "Invalid file type! Your file should have a .naruto extension"
 		sys.exit()
 
 	with open(sourceFile, 'r') as content_file:
