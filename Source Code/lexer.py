@@ -128,27 +128,3 @@ def t_error(t):
 
 # Build the lexer
 lexer = lex.lex()
-# Test it out
-data = '''
-@genin [
-	3 + 4 * 10.123123.123123
-	  + -20 *2 !@izanami asdasd!
-	  @izanami (x>1)
-	  	x = x-1
-	  @seal @izanami
-	  
-	  @byakugan ("hello world")
-	  x=8%2/3.5
-]@kage
-'''
-
-# Give the lexer some input
-lexer.input(data)
-
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input
-    print(tok)
-
