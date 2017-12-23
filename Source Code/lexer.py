@@ -55,7 +55,7 @@ t_end2_tok=r"(@end)"
 
 #-- RegEx for Tokens -- #
 t_dataType_tok=r"@number|@decimal|@boolean|@string"
-t_identifier_tok = r"([A-Za-z][A-Za-z0-9]*)"
+t_identifier_tok = r"([A-Za-z][\$_A-Za-z0-9]*)"
 
 #-- Tokens for symbols --#
 t_comma_tok = r','
@@ -104,7 +104,7 @@ def t_int_tok(t):
 
 #-- Fxn definition for comments: e.g. ! Must always start and end with exclamation point !
 def t_comment(t):
-    r'\![^\!]*\!'
+    r'\$[^\$]*\$'
     return t
     # No return value. Token discarded
 
