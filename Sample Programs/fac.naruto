@@ -1,0 +1,15 @@
+$$ Program that computes the factorial of a number
+
+@genin[
+	@byakugan ("Enter a number: ")
+	n = @summon ()
+	fac = 1
+
+	@mission i @in 1 :+ n[
+		fac = fac * i
+	]@end @mission
+
+	@byakugan ("Answer: ")
+	@byakugan (fac)
+	@byakugan ("\n")
+]@kage
