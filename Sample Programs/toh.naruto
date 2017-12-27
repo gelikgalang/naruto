@@ -1,0 +1,253 @@
+
+
+@genin{
+
+
+disk=3
+srcl=disk
+auxl=0
+desl=0
+i=0
+
+total_moves = 2**disk - 1
+
+@ifsu(disk%2==1)
+[
+    @izanagi(i<total_moves)
+    [
+        @ifsu(i%3==1)
+        [
+            @ifsu(desl~=0)
+                [
+                    @ifsu(srcl~=0)
+                    [
+                        @ifsu(src{srcl-1}>des{desl-1})
+                            [
+                                src{srcl}=des{desl-1}
+                                desl=desl-1
+                                srcl=srcl+1
+                                @byakugan("Move disk destination to source\n")
+                            ]
+                        @elsu
+                            [
+                                des{desl}=src{srcl-1}
+                                srcl=srcl-1
+                                desl=desl+1
+                                @byakugan("Move disk source to destination\n")
+                            ]
+                    ]
+                    @elsu
+                        [
+                            src{0}=des{desl-1}
+                            desl=desl-1
+                            srcl=srcl+1
+                            @byakugan("Move disk destination to source\n")
+                        ]
+                ]
+            @elsu
+                [
+                    des{0}=src{srcl-1}
+                    srcl=srcl-1
+                    desl=desl+1
+                    @byakugan("Move disk source to destination\n")
+                ]
+        ]
+        @elsu @ifsu(i%3==2)
+        [
+            @ifsu(auxl~=0)
+                [
+                    @ifsu(srcl~=0)
+                    [
+                        @ifsu(src{srcl-1}>aux{auxl-1})
+                            [
+                                src{srcl}=aux{auxl-1}
+                                auxl=auxl-1
+                                srcl=srcl+1
+                                @byakugan("Move disk auxiliary to source\n")
+                            ]
+                        @elsu
+                            [
+                                aux{auxl}=src{srcl-1}
+                                srcl=srcl-1
+                                auxl=auxl+1
+                                @byakugan("Move disk source to auxiliary\n")
+                            ]
+                    ]
+                    @elsu
+                        [
+                            src{0}=aux{auxl-1}
+                            auxl=auxl-1
+                            srcl=srcl+1
+                            @byakugan("Move disk auxiliary to source\n")
+                        ]
+                ]
+            @elsu
+                [
+                    aux{0}=src{srcl-1}
+                    srcl=srcl-1
+                    auxl=auxl+1
+                    @byakugan("Move disk source to auxiliary\n")
+                ]
+        ]
+        @elsu @ifsu(i%3==0)
+        [
+            @ifsu(auxl~=0)
+                [
+                    @ifsu(desl~=0)
+                    [
+                        @ifsu(des{desl-1}>aux{auxl-1})
+                            [
+                                des{desl}=aux{auxl-1}
+                                auxl=auxl-1
+                                desl=desl+1
+                                @byakugan("Move disk auxiliary to destination\n")
+                            ]
+                        @elsu
+                            [
+                                aux{auxl}=des{desl-1}
+                                desl=desl-1
+                                auxl=auxl+1
+                                @byakugan("Move disk destination to auxiliary\n")
+                            ]
+                    ]
+                    @elsu
+                        [
+                            des{0}=aux{auxl-1}
+                            auxl=auxl-1
+                            desl=desl+1
+                            @byakugan("Move disk auxiliary to destination\n")
+                        ]
+                ]
+            @elsu
+                [
+                    aux{0}=des{desl-1}
+                    desl=desl-1
+                    auxl=auxl+1
+                    @byakugan("Move disk destination to auxiliary\n")
+                ]
+        ]
+        
+    ]@end @izanagi
+]
+
+@elsu
+[
+
+    @izanagi(i<total_moves)
+    [
+        @ifsu(i%3==1)
+        [
+            @ifsu(auxl~=0)
+                [
+                    @ifsu(srcl~=0)
+                    [
+                        @ifsu(src{srcl-1}>aux{auxl-1})
+                            [
+                                src{srcl}=aux{auxl-1}
+                                auxl=auxl-1
+                                srcl=srcl+1
+                                @byakugan("Move disk auxiliary to source\n")
+                            ]
+                        @elsu
+                            [
+                                aux{auxl}=src{srcl-1}
+                                srcl=srcl-1
+                                auxl=auxl+1
+                                @byakugan("Move disk source to auxiliary\n")
+                            ]
+                    ]
+                    @elsu
+                        [
+                            src{0}=aux{auxl-1}
+                            auxl=auxl-1
+                            srcl=srcl+1
+                            @byakugan("Move disk auxiliary to source\n")
+                        ]
+                ]
+            @elsu
+                [
+                    aux{0}=src{srcl-1}
+                    srcl=srcl-1
+                    auxl=auxl+1
+                    @byakugan("Move disk source to auxiliary\n")
+                ]
+        ]
+        @elsu @ifsu(i%3==2)
+        [
+            @ifsu(desl~=0)
+                [
+                    @ifsu(srcl~=0)
+                    [
+                        @ifsu(src{srcl-1}>des{desl-1})
+                            [
+                                src{srcl}=des{desl-1}
+                                desl=desl-1
+                                srcl=srcl+1
+                                @byakugan("Move disk destination to source\n")
+                            ]
+                        @elsu
+                            [
+                                des{desl}=src{srcl-1}
+                                srcl=srcl-1
+                                desl=desl+1
+                                @byakugan("Move disk source to destination\n")
+                            ]
+                    ]
+                    @elsu
+                        [
+                            src{0}=des{desl-1}
+                            desl=desl-1
+                            srcl=srcl+1
+                            @byakugan("Move disk destination to source\n")
+                        ]
+                ]
+            @elsu
+                [
+                    des{0}=src{srcl-1}
+                    srcl=srcl-1
+                    desl=desl+1
+                    @byakugan("Move disk source to destination\n")
+                ]
+        ]
+        @elsu @ifsu(i%3==0)
+        [
+            @ifsu(desl~=0)
+                [
+                    @ifsu(auxl~=0)
+                    [
+                        @ifsu(aux{auxl-1}>des{desl-1})
+                            [
+                                aux{auxl}=des{desl-1}
+                                desl=desl-1
+                                auxl=auxl+1
+                                @byakugan("Move disk destination to auxiliary\n")
+                            ]
+                        @elsu
+                            [
+                                des{desl}=aux{auxl-1}
+                                auxl=auxl-1
+                                desl=desl+1
+                                @byakugan("Move disk auxiliary to destination\n")
+                            ]
+                    ]
+                    @elsu
+                        [
+                            aux{0}=des{desl-1}
+                            desl=desl-1
+                            auxl=auxl+1
+                            @byakugan("Move disk destination to auxiliary\n")
+                        ]
+                ]
+            @elsu
+                [
+                    des{0}=aux{auxl-1}
+                    auxl=auxl-1
+                    desl=desl+1
+                    @byakugan("Move disk auxiliary to destination\n")
+                ]
+        ]
+        
+    ]@end @izanagi
+]
+
+}@kage
