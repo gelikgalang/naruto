@@ -17,7 +17,6 @@ symbols = interpreter.SymbolTable() # <-- gets the symbol table from the interpr
 # __init__ functions are for initialization of the objects of the class
 # __len__ functions return the length of the object specified
 # __iter__ functions return iterator objects
-# __repr__ functions return string representation of a class instance
 
 
 class Node:
@@ -32,9 +31,6 @@ class Node:
     def __iter__(self):
         return iter(self.children)
 
-    def __repr__(self):
-        return '<Node {0}>'.format(self.children)
-
     def evaluate(self):
         '''
         Function responsible for evaluating all the children of the
@@ -43,12 +39,12 @@ class Node:
         '''
         returnList = []
         for i in self:              
-            if isinstance(i,Exit): # <-- condition if a certain evaluation is not implemented
+            if isinstance(i,Break): # <-- condition if a certain evaluation is not implemented
                 return i
 
             result = i.evaluate()
 
-            if isinstance(result,Exit): # <-- another condition if a certain evaluation is not implemented
+            if isinstance(result,Break): # <-- another condition if a certain evaluation is not implemented
                 return result
 
             elif result is not None:    # <-- evaluation implemented; appends the evaluated result to the return list
@@ -65,10 +61,11 @@ class BaseClass:
     def evaluate(self):
         raise NotImplementedError()
 
-class Exit(BaseClass):
+class Break(BaseClass):
     '''
     Class that returns an empty iterator object and evaluates a
-    pass statement--no command or code to execute.
+    pass statement--no command or code to execute. Class for
+    break (@kai) cases.
     '''
     def __iter__(self):
         return []
@@ -80,23 +77,16 @@ class Print(BaseClass):
     def __init__(self, items):
         self.items = items
 
-    def __repr__(self):
-        return '<Print {0}>'.format(self.items)
-
     def evaluate(self):
         '''
         Function responsible for assigning a print function to @byakugan
         and actually print the statements passed in it.
-        '''
-       
+        '''   
         print(*self.items.evaluate(), sep='', end='') # separator and end string are set to be empty
 
-class Primitive(BaseClass):
+class ReturnValue(BaseClass):
     def __init__(self,value):
         self.value = value
-
-    def __repr__(self):
-        return '<Primitive "{0}"({1})>'.format(self.value,self.value.__class__)
 
     def evaluate(self):
         '''
@@ -105,30 +95,19 @@ class Primitive(BaseClass):
         return self.value   
 
 class Identifier(BaseClass):
-    isFxn = False
-
     def __init__(self,name):
         self.name = name
-
-    def __repr__(self):
-        return '<Identifier {0}>'.format(self.name)
 
     def assign(self,val):
         '''
         Function that assigns the identifier to its value.
         '''
-        if self.isFxn: # <-- if identifier is being assigned to a function
-            symbols.set_func(self.name,val)
-        else: # <-- if identifier is being assigned to a single value
-            symbols.set_sym(self.name,val)
+        symbols.set_sym(self.name,val)
 
     def evaluate(self):
         '''
         Function that returns the attributes of the identifier from the symbol table.
         '''
-        if self.isFxn:
-            return symbols.get_func(self.name)
-
         return symbols.get_sym(self.name)
 
 class Assignment(BaseClass):
@@ -136,23 +115,22 @@ class Assignment(BaseClass):
         self.identifier = identifier
         self.val = val
 
-    def __repr__(self):
-        return '<Assignment sym={0}; val={1}>'.format(self.identifier, self.val)
-
     def evaluate(self):
-        if self.identifier.isFxn:
-            self.identifier.assign(self.val)
-        else:
-            self.identifier.assign(self.val.evaluate())
+        '''
+        Function that assigns the given value to the given identifier.
+        '''
+        self.identifier.assign(self.val.evaluate())
 
 
-class BinaryOperation(BaseClass):
-    __operations = {
+class BinOp(BaseClass):
+    oper = { # <-- Uses the operator module to assign operator value to the token specified
         '+': operator.add,
         '-': operator.sub,
         '*': operator.mul,
         '%': operator.mod,
-        '/': operator.truediv,
+        '/': operator.div,
+        '//': operator.truediv,
+        '**': operator.pow,
 
 
         '>': operator.gt,
@@ -163,181 +141,143 @@ class BinaryOperation(BaseClass):
         '~=': operator.ne,
     }
 
-    def __repr__(self):
-        return '<BinaryOperation left ={0} right={1} operation="{2}">'.format(self.left, self.right, self.op)
-
     def __init__(self, left, right, op):
         self.left = left
         self.right = right
         self.op = op
 
     def evaluate(self):
+        '''
+        Function that evaluates the two expressions passed in correspondence
+        to the operator passed as well.
+        '''
         left = None
-        right = None
-
-        try:
-            # find the operation that needs to be performed
-            op = self.__operations[self.op]
-
-            # The only lambda operations are logical and/or
-            # Pass the arguments unevaluated as they will be during the lambda execution
-            # This implements short circuit boolean evaluation
-
-            # otherwise, straight up call the operation, also save the variables
-            # in case they are to be used for the exception block
-            left = self.left.evaluate()
-            right = self.right.evaluate()
-            return op(left, right)
-        except TypeError:
-            fmt = (left.__class__.__name__, left, self.op, right.__class__.__name__, right)
-            raise Exception("Unable to apply operation (%s: %s) %s (%s: %s)" % fmt)
+        right = None     
+        op = self.oper[self.op] # looks for the operator passed in the list of operations
+        left = self.left.evaluate() # evaluates left expr
+        right = self.right.evaluate() # evaluates right expr
+        return op(left, right) 
 
 
-class UnaryOperation(BaseClass):
-    __operations = {
+class UnaryOp(BaseClass):
+    oper = { # <-- Uses the operator module to assign operator value to the token specified
         '-': operator.neg,
         '~': operator.not_
     }
-
-    def __repr__(self):
-        return '<Unary operation: operation={0} expr={1}>'.format(self.operation, self.expr)
 
     def __init__(self, operation, expr):
         self.operation = operation
         self.expr = expr
 
     def evaluate(self):
-        return self.__operations[self.operation](self.expr.evaluate())
+        '''
+        Function that returns the evaluated expression computed upon 
+        by a unary operator.
+        '''
+        return self.oper[self.operation](self.expr.evaluate())
 
 class Array(BaseClass):
-    def __init__(self,values):
-        self.values = values
-
-    def __repr__(self):
-        return '<Array len={0} items={1}>'.format(len(self.values.children), self.values)
+    def __init__(self,val):
+        self.val = val
 
     def evaluate(self):
         '''
-        
+        Function that returns the values inside of an array.
         '''
-        return self.values.evaluate()
+        return self.val.evaluate()
 
 class ArrayAccess(BaseClass):
-    def __init__(self, array, index):
-        self.array = array
+    def __init__(self, arr, index):
+        self.arr = arr
         self.index = index
-
-    def __repr__(self):
-        return '<Array index {0}>'.format(self.index)
 
     def evaluate (self):
-        return self.array.evaluate()[self.index.evaluate()]
+        '''
+        Function that returns the value of the element 
+        being accessed in an array.
+        '''
+        return self.arr.evaluate()[self.index.evaluate()]
 
 class ArrayAssign(BaseClass):
-    def __init__(self, array, index, value):
-        self.array = array
+    def __init__(self, arr, index, val):
+        self.arr = arr
         self.index = index
-        self.value = value
-
-    def __repr__(self):
-        return '<Array arr={0} index={1} value={2}>'.format(self.array, self.index, self.value)
+        self.val = val
 
     def evaluate(self):
-        self.array.evaluate()[self.index.evaluate()] = self.value.evaluate()
+        '''
+        Function that assigns a value to an indexed array.
+        '''
+        self.arr.evaluate()[self.index.evaluate()] = self.val.evaluate()
 
 class For(BaseClass):
-    def __init__(self, variable, start, end, asc, body):
-        self.variable = variable
-        self.start = start
-        self.end = end
-        self.asc = asc  # ascending order
+    def __init__(self, ident, rangeStart, rangeEnd, colonTok, body):
+        self.ident = ident
+        self.rangeStart = rangeStart
+        self.rangeEnd = rangeEnd
+        self.colonTok = colonTok 
         self.body = body
 
-    def __repr__(self):
-        fmt = '<For start={0} direction={1} end={2} body={3}>'
-        return fmt.format(self.start, 'asc' if self.asc else 'desc', self.end, self.body)
-
     def evaluate(self):
-        if self.asc:
-            lo = self.start.evaluate()
-            hi = self.end.evaluate() + 1
-            sign = 1
-        else:
-            lo = self.start.evaluate()
-            hi = self.end.evaluate() - 1
-            sign = -1
+        '''
+        Function that evaluates for statement (@mission) passed.
+        '''
+        if self.colonTok: # <-- condition if colonTok argument passed is ':+'
+            start = self.rangeStart.evaluate()
+            end = self.rangeEnd.evaluate() + 1
+            adder = 1 # <-- adds 1 per iteration
+        else: # <-- condition if colonTok argument passed is ':-'
+            start = self.rangeStart.evaluate()
+            end = self.rangeEnd.evaluate() - 1
+            adder = -1 # <-- adds -1 per iteration
 
-        for i in range(lo, hi, sign):
-            self.variable.assign(i)
+        for i in range(start, end, adder):
+            self.ident.assign(i)
 
-            # in case of exit statement prematurely break the loop
-            if isinstance(self.body.evaluate(), Exit):
+            if isinstance(self.body.evaluate(), Break): # <-- breaks the loop if '@kai' (our own break statement) is encountered
                 break
 
 class While(BaseClass):
-    def __init__(self, condition, body):
-        self.condition = condition
+    def __init__(self, cond, body):
+        self.cond = cond
         self.body = body
 
-    def __repr__(self):
-        return '<While cond={0} body={1}>'.format(self.condition, self.body)
-
     def evaluate(self):
-        while self.condition.evaluate():
-            if isinstance(self.body.evaluate(), Exit):
+        '''
+        Function that evaluates while statement (@izanami) passed.
+        '''
+        while self.cond.evaluate():
+            if isinstance(self.body.evaluate(), Break): # <-- breaks the loop if '@kai' (our own break statement) is encountered
                 break
 
 class If(BaseClass):
-    def __init__(self, condition, truepart, elsepart=None):
-        self.condition = condition
-        self.truepart = truepart
-        self.elsepart = elsepart
-
-    def __repr__(self):
-        return '<If condition={0} then={1} else={2}>'.format(self.condition, self.truepart, self.elsepart)
+    def __init__(self, cond, ifBod, elseBod=None):
+        self.cond = cond
+        self.ifBod = ifBod
+        self.elseBod = elseBod
 
     def evaluate(self):
-        if self.condition.evaluate():
-            return self.truepart.evaluate()
-        elif self.elsepart is not None:
-            return self.elsepart.evaluate()
+        '''
+        Function that evaluates the If Statement (@ifsu) passed.
+        '''
+        if self.cond.evaluate(): # <-- returns evaluation of the if statement's body if condition is true
+            return self.ifBod.evaluate()
+        elif self.elseBod is not None: # <-- returns evaluation of the else statement's body if condition is false
+            return self.elseBod.evaluate()
 
-def full_eval(expr):
-    """
-    Fully evaluates the passex expression returning it's value
-    """
 
-    while isinstance(expr, BaseClass):
-        expr = expr.evaluate()
-
-    return expr
-
-class FunctionCall(BaseClass):
-    def __init__(self, name, params):
-        self.name = name
-        self.params = params
-
-    def __repr__(self):
-        return '<Function call name={0} params={1}>'.format(self.name, self.params)
-
-    def evaluate_built_in(self):
-        func = self.name.evaluate()
-        args = []
-
-        for p in self.params:
-            args.append(full_eval(p))
-
-        return func.evaluate(args)
-
+class SetUserInput(BaseClass):
+    '''
+    Class that returns python's built-in function 'input ()'
+    and assign it to '@summon'; for strings.
+    '''
     def evaluate(self):
-        return self.evaluate_built_in
+        return raw_input()
 
-class BuiltInFxn(BaseClass):
-    def __init__(self, func):
-        self.func = func
-
-    def __repr__(self):
-        return '<Builtin function {0}>'.format(self.func)
-
-    def evaluate(self, args):
-        return self.func(*args)
+class SetUserInputInt(BaseClass):
+    '''
+    Class that returns python's built-in function 'input ()'
+    and assign it to '@summon_Int'; for integers.
+    '''
+    def evaluate(self):
+        return input()

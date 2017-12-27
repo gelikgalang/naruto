@@ -12,7 +12,6 @@ import ply.yacc as yacc
 from lexer import *
 #from compiler import ast # <-- built-in module
 import ast as ast # <-- to be defined by us
-import built_in
 
 
 #-- Declaration of operator precedence --#
@@ -21,7 +20,8 @@ precedence = (
 	('left', 	'not_tok'), # level 0
 	('left', 	'plus_tok','minus_tok'), # level 1
 	('left', 	'mult_tok','div_tok','mod_tok'), # level 2
-	('right', 'UMINUS'), # level 3
+	('left',	'pow_tok'), # level 3
+	('right', 'UMINUS'), # level 4
 )	
 
 #-- Grammar Rules --#
@@ -55,7 +55,7 @@ def p_statement_breal(p):
 	'''
 	statement : break_tok
 	'''
-	p[0] = ast.Exit()
+	p[0] = ast.Break()
 def p_statement_print(p):
 	'''
 	statement : print_tok arguments
@@ -101,22 +101,24 @@ def p_expr_BinOp(p):
 			| expr minus_tok expr
 			| expr mult_tok expr
 			| expr div_tok expr
+			| expr truediv_tok expr
 			| expr mod_tok expr
+			| expr pow_tok expr
 	'''
-	p[0] = ast.BinaryOperation(p[1],p[3],p[2])
+	p[0] = ast.BinOp(p[1],p[3],p[2])
 
 def p_expr_UnaryOp(p):
 	'''
 	expr 	: minus_tok expr %prec UMINUS
 			| not_tok expr
 	'''
-	p[0] = ast.UnaryOperation(p[1],p[2])
+	p[0] = ast.UnaryOp(p[1],p[2])
 
 def p_expr_paren(p):
 	'''
 	expr : lParen_tok expr rParen_tok
 	'''
-	p[0] = p[2] if isinstance(p[2], ast.BaseClass) else ast.Primitive(p[2]) # <-- If: expr not primitive; Else: expr is primitive
+	p[0] = p[2] if isinstance(p[2], ast.BaseClass) else ast.ReturnValue(p[2]) # <-- If: expr not primitive; Else: expr is primitive
 
 def p_expr_arr(p):
 	'''
@@ -146,7 +148,7 @@ def p_primitive(p):
 	if isinstance(p[1], ast.BaseClass): # <-- primitive: boolean
 		p[0] = p[1]
 	else: # <-- primitive: int | string | float
-		p[0] = ast.Primitive(p[1])
+		p[0] = ast.ReturnValue(p[1])
 
 def p_boolean(p):
 	'''
@@ -160,9 +162,9 @@ def p_boolean(p):
 				| false_tok
 	'''
 	if len(p )== 4:
-		p[0] = ast.BinaryOperation(p[1],p[3],p[2])
-	else:
-		p[0] = ast.Primitive(p[1])
+		p[0] = ast.BinOp(p[1],p[3],p[2])
+	else: # <-- boolean: true_tok | false_tok
+		p[0] = ast.ReturnValue(p[1])
 def p_assignable(p):
 	'''
 	assignable 	: primitive
@@ -202,28 +204,23 @@ def p_ifStatement_w_elif(p):
 	'''
 	p[0] = ast.If(p[3],p[6],p[9])
 
-def p_fxn(p):
+def p_user_input_str(p):
 	'''
-	expr : identifier lParen_tok arguments rParen_tok
+	expr : read_tok lParen_tok rParen_tok
 	'''
-	p[1].isFxn=True
-	p[0] = ast.FunctionCall(p[1],p[3])
+	p[0] = ast.SetUserInput()
 
-# def p_builtin(p):
-# 	'''
-# 	builtin 	: intType_tok
-# 				| floatType_tok
-# 				| boolType_tok
-# 				| strType_tok
-# 				| read_tok
-# 	'''
-# 	p[0] = ast.BuiltIn(p[1])
+def p_user_input_int(p):
+	'''
+	expr : readInt_tok lParen_tok rParen_tok
+	'''
+	p[0] = ast.SetUserInputInt()
 
-def p_error(p):
-	if p: # <-- 
-		print "BAD SYNTAX: Error in line ",p.lineno
-		print "Syntax error at token:",p.type
-	else:
+def p_error(p): # exception handler
+	if p: # <-- Condition if one (or more) of the grammar rules is not followed
+		print "BAD SYNTAX: Error in line ",p.lineno # prints the line number where the error occured
+		print "Syntax error at token:",p.type # prints the token that made the error
+	else: # <-- Condition if end of the file is met without "@kage" as its ender
 		print("Syntax error at EOF! ``@kage'' should be at the last line to end the program properly.")
 
 def startParse():
@@ -240,13 +237,8 @@ def startParse():
 	with open(sourceFile, 'r') as content_file:
 	    data = content_file.read()
 
-	#lexer = lex.lex()
-	#lexer.input(data)
-
 	parser = yacc.yacc(debug=False)
 	result = parser.parse(data,tracking=False)
-	
-	built_in.dec_fxns(ast.symbols)
 
 	for node in result.children:
 		node.evaluate()

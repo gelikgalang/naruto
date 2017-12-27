@@ -13,10 +13,8 @@ the main function.
 
 class SymbolTable:
     symbols = 'symbols'
-    fxns = 'functions'
 
     table = {
-        fxns: {},
         symbols: {},
     }
 
@@ -41,18 +39,3 @@ class SymbolTable:
         Function that inserts a new symbol to the symbol table.
         '''
         self.table[self.symbols][sym] = val
-
-
-    def get_func(self, name):
-        '''
-        Function that returns a function name if found from the list of
-        functions in the symbol table; raises an exception otherwise.
-        '''
-        if name in self.table[self.fxns]:
-            return self.table[self.fxns][name]
-
-        raise Exception("Undefined function '%s'" % name)
-
-    def set_func(self, name, val):
-        
-        self.table[self.fxns][name] = val

@@ -16,6 +16,7 @@ tokens=(
 	
 	'print_tok',
 	'read_tok',
+	'readInt_tok',
 	
 	'true_tok',
 	'false_tok',
@@ -53,14 +54,12 @@ tokens=(
 	'minus_tok',
 	'mult_tok',
 	'div_tok',
+	'truediv_tok',
 	'mod_tok',
+	'pow_tok',
 	'arrOpen_tok',
 	'arrClose_tok',
-
-	'intType_tok',
-	'floatType_tok',
-	'boolType_tok',
-	'strType_tok',
+	
 	)
 
 #-- Tokens for program header/footer --#
@@ -70,6 +69,7 @@ t_progEnd_tok = r"(@kage)"
 #-- Tokens for input/output --#
 t_print_tok = r"(@byakugan)"
 t_read_tok = r"(@summon)"
+t_readInt_tok = r"(@summon_Int)"
 
 #-- Tokens for loop/if-else statements --#
 t_while_tok=r"(@izanami)"
@@ -101,17 +101,12 @@ t_not_tok=r'~'
 t_plus_tok = r'\+'
 t_minus_tok = r'-'
 t_mult_tok = r'\*'
+t_pow_tok = r'\*\*'
 t_div_tok = r'\/'
+t_truediv_tok = r'\/\/'
 t_mod_tok = r'\%'
 t_arrOpen_tok = r'{'
 t_arrClose_tok = r'}'
-
-#-- Tokens for Data Types --#
-t_intType_tok = r"(@integer)"
-t_floatType_tok = r"(@float)"
-t_boolType_tok = r"(@bool)"
-t_strType_tok = r"(@string)"
-
 
 
 #-- Token to ignore: whitespace and comments--#
