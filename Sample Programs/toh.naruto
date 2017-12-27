@@ -1,19 +1,31 @@
 
 
-@genin{
+@genin[
 
+@byakugan ("Enter # of disk: ")
+disk = @summon_Int ()
+@byakugan ("Enter start peg: ")
+start = @summon ()
+@byakugan ("Enter middle peg: ")
+mid = @summon ()
+@byakugan ("Enter end peg: ")
+end = @summon ()
+
+src = {3,2,1}
+des = {0,0,0}
+aux = {0,0,0}
 
 disk=3
 srcl=disk
 auxl=0
 desl=0
-i=0
+
 
 total_moves = 2**disk - 1
 
 @ifsu(disk%2==1)
 [
-    @izanagi(i<total_moves)
+    @mission i @in 1 :+ total_moves
     [
         @ifsu(i%3==1)
         [
@@ -26,14 +38,22 @@ total_moves = 2**disk - 1
                                 src{srcl}=des{desl-1}
                                 desl=desl-1
                                 srcl=srcl+1
-                                @byakugan("Move disk destination to source\n")
+                                @byakugan("Move disk ") 
+                                @byakugan (end) 
+                                @byakugan (" to ")
+                                @byakugan (start)
+                                @byakugan ("\n")
                             ]
                         @elsu
                             [
                                 des{desl}=src{srcl-1}
                                 srcl=srcl-1
                                 desl=desl+1
-                                @byakugan("Move disk source to destination\n")
+                                @byakugan("Move disk ")
+                                @byakugan(start) 
+                                 @byakugan (" to ")
+                                @byakugan (end)
+                                 @byakugan ("\n")
                             ]
                     ]
                     @elsu
@@ -41,7 +61,11 @@ total_moves = 2**disk - 1
                             src{0}=des{desl-1}
                             desl=desl-1
                             srcl=srcl+1
-                            @byakugan("Move disk destination to source\n")
+                            @byakugan("Move disk ") 
+                            @byakugan (end)
+                            @byakugan (" to ")
+                            @byakugan (start)
+                            @byakugan ("\n")
                         ]
                 ]
             @elsu
@@ -49,7 +73,11 @@ total_moves = 2**disk - 1
                     des{0}=src{srcl-1}
                     srcl=srcl-1
                     desl=desl+1
-                    @byakugan("Move disk source to destination\n")
+                    @byakugan("Move disk ")
+                    @byakugan(start) 
+                    @byakugan (" to ")
+                    @byakugan (end)
+                    @byakugan ("\n")
                 ]
         ]
         @elsu @ifsu(i%3==2)
@@ -63,14 +91,22 @@ total_moves = 2**disk - 1
                                 src{srcl}=aux{auxl-1}
                                 auxl=auxl-1
                                 srcl=srcl+1
-                                @byakugan("Move disk auxiliary to source\n")
+                                @byakugan("Move disk ") 
+                                @byakugan (mid)
+                                @byakugan (" to ")
+                                @byakugan (start)
+                                @byakugan ("\n")
                             ]
                         @elsu
                             [
                                 aux{auxl}=src{srcl-1}
                                 srcl=srcl-1
                                 auxl=auxl+1
-                                @byakugan("Move disk source to auxiliary\n")
+                                @byakugan("Move disk ")
+                                 @byakugan(start) 
+                                  @byakugan (" to ") 
+                                @byakugan (mid)
+                                 @byakugan ("\n")
                             ]
                     ]
                     @elsu
@@ -78,7 +114,11 @@ total_moves = 2**disk - 1
                             src{0}=aux{auxl-1}
                             auxl=auxl-1
                             srcl=srcl+1
-                            @byakugan("Move disk auxiliary to source\n")
+                            @byakugan("Move disk ") 
+                            @byakugan (mid) 
+                            @byakugan (" to ")
+                                @byakugan (start)
+                                @byakugan ("\n")
                         ]
                 ]
             @elsu
@@ -86,7 +126,11 @@ total_moves = 2**disk - 1
                     aux{0}=src{srcl-1}
                     srcl=srcl-1
                     auxl=auxl+1
-                    @byakugan("Move disk source to auxiliary\n")
+                    @byakugan("Move disk ")
+                    @byakugan(start) 
+                  @byakugan (" to ") 
+                    @byakugan (mid)
+                    @byakugan ("\n")
                 ]
         ]
         @elsu @ifsu(i%3==0)
@@ -100,14 +144,24 @@ total_moves = 2**disk - 1
                                 des{desl}=aux{auxl-1}
                                 auxl=auxl-1
                                 desl=desl+1
-                                @byakugan("Move disk auxiliary to destination\n")
+                                @byakugan("Move disk ") 
+                                @byakugan (mid) 
+                                 @byakugan (" to ") 
+                                 @byakugan (end)
+                                 @byakugan("\n")
                             ]
                         @elsu
                             [
                                 aux{auxl}=des{desl-1}
                                 desl=desl-1
                                 auxl=auxl+1
-                                @byakugan("Move disk destination to auxiliary\n")
+                                @byakugan("Move disk ") 
+                                @byakugan (end) 
+
+                                 @byakugan(" to ")
+                                @byakugan (mid)
+
+                                 @byakugan("\n")
                             ]
                     ]
                     @elsu
@@ -115,7 +169,13 @@ total_moves = 2**disk - 1
                             des{0}=aux{auxl-1}
                             auxl=auxl-1
                             desl=desl+1
-                            @byakugan("Move disk auxiliary to destination\n")
+                            @byakugan("Move disk ") 
+                            @byakugan (mid) 
+
+                                 @byakugan(" to ")
+                            @byakugan (end)
+
+                                 @byakugan("\n")
                         ]
                 ]
             @elsu
@@ -123,17 +183,23 @@ total_moves = 2**disk - 1
                     aux{0}=des{desl-1}
                     desl=desl-1
                     auxl=auxl+1
-                    @byakugan("Move disk destination to auxiliary\n")
+                    @byakugan("Move disk ") 
+                    @byakugan (end)
+
+                                 @byakugan(" to ")
+                    @byakugan (mid)
+
+                                 @byakugan("\n")
                 ]
         ]
         
-    ]@end @izanagi
+    ]@end @mission
 ]
 
 @elsu
 [
 
-    @izanagi(i<total_moves)
+    @izanami(i<total_moves)
     [
         @ifsu(i%3==1)
         [
@@ -146,14 +212,24 @@ total_moves = 2**disk - 1
                                 src{srcl}=aux{auxl-1}
                                 auxl=auxl-1
                                 srcl=srcl+1
-                                @byakugan("Move disk auxiliary to source\n")
+                                @byakugan("Move disk ") 
+                                @byakugan (mid) 
+                                 @byakugan (" to ")
+                                @byakugan (start)
+                                @byakugan ("\n")
                             ]
                         @elsu
                             [
                                 aux{auxl}=src{srcl-1}
                                 srcl=srcl-1
                                 auxl=auxl+1
-                                @byakugan("Move disk source to auxiliary\n")
+                                @byakugan("Move disk ")
+                                @byakugan (start)
+                                 @byakugan (" to ")
+                               
+                                @byakugan (mid)
+                                @byakugan ("\n")
+
                             ]
                     ]
                     @elsu
@@ -161,7 +237,11 @@ total_moves = 2**disk - 1
                             src{0}=aux{auxl-1}
                             auxl=auxl-1
                             srcl=srcl+1
-                            @byakugan("Move disk auxiliary to source\n")
+                            @byakugan("Move disk ") 
+                            @byakugan (mid) 
+                            @byakugan (" to ")
+                                @byakugan (start)
+                                @byakugan ("\n")
                         ]
                 ]
             @elsu
@@ -169,7 +249,11 @@ total_moves = 2**disk - 1
                     aux{0}=src{srcl-1}
                     srcl=srcl-1
                     auxl=auxl+1
-                    @byakugan("Move disk source to auxiliary\n")
+                    @byakugan("Move disk ")
+                      @byakugan (start)
+                                 @byakugan (" to ")
+                     @byakugan (mid)
+                     @byakugan ("\n")
                 ]
         ]
         @elsu @ifsu(i%3==2)
@@ -183,14 +267,23 @@ total_moves = 2**disk - 1
                                 src{srcl}=des{desl-1}
                                 desl=desl-1
                                 srcl=srcl+1
-                                @byakugan("Move disk destination to source\n")
+                                @byakugan("Move disk ") 
+                                @byakugan (end) 
+                                 @byakugan (" to ")
+                                @byakugan (start)
+                                 @byakugan ("\n")
+                                
                             ]
                         @elsu
                             [
                                 des{desl}=src{srcl-1}
                                 srcl=srcl-1
                                 desl=desl+1
-                                @byakugan("Move disk source to destination\n")
+                                @byakugan("Move disk ")
+                                 @byakugan (start)
+                                 @byakugan (" to ")
+                                 @byakugan (end)
+                                 @byakugan ("\n")
                             ]
                     ]
                     @elsu
@@ -198,7 +291,11 @@ total_moves = 2**disk - 1
                             src{0}=des{desl-1}
                             desl=desl-1
                             srcl=srcl+1
-                            @byakugan("Move disk destination to source\n")
+                            @byakugan("Move disk ") 
+                            @byakugan (end)
+                             @byakugan (" to ")
+                                @byakugan (start)
+                                 @byakugan ("\n")
                         ]
                 ]
             @elsu
@@ -206,7 +303,12 @@ total_moves = 2**disk - 1
                     des{0}=src{srcl-1}
                     srcl=srcl-1
                     desl=desl+1
-                    @byakugan("Move disk source to destination\n")
+                    @byakugan("Move disk ")
+                     @byakugan (start)
+                                 @byakugan (" to ")
+                     @byakugan (end)
+                     @byakugan ("\n")
+
                 ]
         ]
         @elsu @ifsu(i%3==0)
@@ -220,14 +322,22 @@ total_moves = 2**disk - 1
                                 aux{auxl}=des{desl-1}
                                 desl=desl-1
                                 auxl=auxl+1
-                                @byakugan("Move disk destination to auxiliary\n")
+                                @byakugan("Move disk ") 
+                                @byakugan (end) 
+                                @byakugan (" to ")
+                                @byakugan (mid)
+                                  @byakugan ("\n")
                             ]
                         @elsu
                             [
                                 des{desl}=aux{auxl-1}
                                 auxl=auxl-1
                                 desl=desl+1
-                                @byakugan("Move disk auxiliary to destination\n")
+                                @byakugan("Move disk ") 
+                                @byakugan (mid) 
+                                @byakugan (" to ") 
+                                @byakugan (end)
+                                 @byakugan ("\n")
                             ]
                     ]
                     @elsu
@@ -235,7 +345,11 @@ total_moves = 2**disk - 1
                             aux{0}=des{desl-1}
                             desl=desl-1
                             auxl=auxl+1
-                            @byakugan("Move disk destination to auxiliary\n")
+                            @byakugan("Move disk ") 
+                            @byakugan (end)
+                             @byakugan (" to ")
+                            @byakugan (mid)
+                             @byakugan ("\n")
                         ]
                 ]
             @elsu
@@ -243,11 +357,15 @@ total_moves = 2**disk - 1
                     des{0}=aux{auxl-1}
                     auxl=auxl-1
                     desl=desl+1
-                    @byakugan("Move disk auxiliary to destination\n")
+                    @byakugan("Move disk ") 
+                    @byakugan (mid) 
+                     @byakugan (" to ")
+                    @byakugan (end)
+                     @byakugan ("\n")
                 ]
         ]
         
-    ]@end @izanagi
+    ]@end @izanami
 ]
 
-}@kage
+]@kage

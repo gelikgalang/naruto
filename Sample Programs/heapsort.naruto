@@ -1,86 +1,91 @@
 @genin[
-	a = {4, 65, 2, -31, 0, 99, 2, 83, 782, 1}
-	n=10
-	i=0
-	@izanami(i<n)[
-	    @byakugan(a{i})
-	    @byakugan("    ")
-		i=i+1
-		]@end @izanami
-	@byakugan("\n")
-	i=(n-2)/2
 
-	@izanami(i>=0)[
-		@izanami(@naruto)[
-			b=2*i+1
-			c=2*i+2
-			m=i
 
-			@ifsu(b<n)[
-					@ifsu(a{b} > a{m})[
-					m=b
+a = {4, 65, 2, -31, 0, 99, 2, 83, 782, 1}
+n=10
+i=0
+@izanami(i<n)[
+    @byakugan(a{i})
+    @byakugan("    ")
+	i=i+1
+	]@end @izanami
+@byakugan("\n")
 
-				]
+i=(n-2)/2
+
+@izanami(i>=0)[
+	@izanami(@naruto)[
+		b=2*i+1
+		c=2*i+2
+		m=i
+
+		@ifsu(b<n)[
+
+			@ifsu(a{b} > a{m})[
+
+			m=b
 			]
-			@ifsu(c<n)[
-				
-					@ifsu(a{c} > a{m})[
-					m=c
-				]
+		]
+		@ifsu(c<n)[
+			@ifsu(a{c}>a{m})[
+			m=c
 			]
-			j=m
-
-			@ifsu(j==i)[
-				@kai
-			]
-			t = a{i}
-	        a{i} = a{j}
-	        a{j} = t
-	        i = j
-		]@end @izanami
-
-		i=i-1
-
+		]
+		j=m
+		@ifsu(j==i)[
+			@kai
+		]
+		t = a{i}
+        a{i} = a{j}
+        a{j} = t
+        i = j
 	]@end @izanami
 
-	i=0
-	@izanami(i<n)[
-		x=n-i-1
-		t=a{x}
-		a{x}=a{0}
-		a{0}=t
-		k=0
-		@izanami(@naruto)[
-			b=2*k+1
-			c=2*k+2
-			m=k
-			@ifsu(b<x)[
-					@ifsu(a{b} > a{m})[
-					m=b
-				]
+	i=i-1
+
+]@end @izanami
+
+i=0
+@izanami(i<n)[
+	x=n-i-1
+	t=a{x}
+	a{x}=a{0}
+	a{0}=t
+	k=0
+	@izanami(@naruto)[
+		b=2*k+1
+		c=2*k+2
+		m=k
+		@ifsu(b<x)[
+			@ifsu(a{b}>a{m})[
+			m=b
 			]
-			@ifsu(c<x)[
-					@ifsu(a{c} > a{m})[
-					m=c
-				]
+		]
+		@ifsu(c<x)[
+			@ifsu(a{c}>a{m})[
+			m=c
 			]
-			j=m
-			@ifsu(j==k)[
-				@kai
-			]
-			t = a{k}
-	        a{k} = a{j}
-	        a{j} = t
-	        k = j
-		]@end @izanami
-		i=i+1
-	]@end @izanami        
-	i=0
-	@izanami(i<n)[
-		@byakugan(a{i})
-		@byakugan("    ")
-		
-		i=i+1
+		]
+		j=m
+		@ifsu(j==k)[
+			@kai
+		]
+		t = a{k}
+        a{k} = a{j}
+        a{j} = t
+        k = j
 	]@end @izanami
-	@byakugan("\n")
+
+	i=i+1
+]@end @izanami
+        
+i=0
+@izanami(i<n)[
+	@byakugan(a{i})
+	@byakugan ("    ")
+	i=i+1
+]@end @izanami
+@byakugan("\n")
+
+
 ]@kage
