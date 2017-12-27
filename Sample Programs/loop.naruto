@@ -1,0 +1,31 @@
+$$ Loop test
+$$ ":+" -- adds 1 to identifier specified per iteration
+$$ ":-" -- subtracts 1 per iteration
+
+@genin[
+	x = 10
+
+	@byakugan ("FOR : ASCENDING\n")
+	@mission i @in 1 :+ x[
+		@byakugan ("No. of iterations: ")
+		@byakugan (i)
+		@byakugan ("\n")
+	]@end @mission
+
+	@byakugan ("\nFOR : DESCENDING\n")
+	@mission i @in x :- 1[
+		@byakugan ("No. of iterations: ")
+		@byakugan (i)
+		@byakugan ("\n")
+	]@end @mission
+
+	@byakugan ("\nWHILE\n")
+	
+	@izanami (x~=0) [
+		@byakugan ("Current x: ")
+		@byakugan (x)
+		@byakugan ("\n")
+		x = x - 1
+	]@end @izanami
+
+]@kage

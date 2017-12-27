@@ -1,0 +1,18 @@
+$$ If-Else Test
+
+@genin[
+	x = 1
+
+	@ifsu (x < -1) [
+		
+		@byakugan ("HUHU GUMANA KA\n")
+	
+	]@elsu @ifsu (x == 0) [
+		
+		@byakugan ("Else-if statement yazzu\n")
+	
+	]@elsu[
+		
+		@byakugan ("Final else\n") $$ This should be printed
+	]
+]@kage

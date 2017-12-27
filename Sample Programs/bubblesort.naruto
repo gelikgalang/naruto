@@ -1,0 +1,23 @@
+$$ A program that bubble sorts an array
+
+@genin [
+	arr = {2,1,6,10,4,3,7,5,9,8}
+	@byakugan ("Initial array: ")
+	@byakugan (arr)
+	@byakugan ("\n")
+	len = 9
+
+	@mission i @in 0 :+ len [
+		@mission j @in len :- i[
+			@ifsu (arr{j} < arr{j-1}) [
+				temp = arr{j}
+				arr{j} = arr{j-1}
+				arr{j-1} = temp
+			]
+		]@end @mission
+	]@end @mission
+
+	@byakugan ("Sorted array: ")
+	@byakugan (arr)
+	@byakugan ("\n")
+]@kage

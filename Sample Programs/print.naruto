@@ -1,0 +1,7 @@
+$$ This is a random comment that should be ignored
+
+@genin[
+	
+	@byakugan ("Welcome to the Naruto language! :)\n") $$ Prints the arguments
+
+]@kage 
