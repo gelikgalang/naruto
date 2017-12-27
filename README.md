@@ -19,7 +19,7 @@
 > `naruto.jpg` : https://wallpapercave.com/w/wp1937168
 
 #### Special Reference
-> We would like to acknowledge these projects as it served as guides to us in building ours: https://github.com/gbrllemarie/spacetimetravel, https://github.com/dabeaz/ply/tree/master/example/GardenSnake, https://github.com/alex/alex-s-language
+> We would like to acknowledge these projects as it served as guides to us in building ours: https://github.com/gbrllemarie/spacetimetravel, https://github.com/dabeaz/ply/tree/master/example/GardenSnake, https://github.com/alex/alex-s-language, https://github.com/maldoinc/mamba
 
 > PLY guide: http://www.dabeaz.com/ply/ply.html
 
